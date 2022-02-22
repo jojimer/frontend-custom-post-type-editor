@@ -111,6 +111,19 @@ jQuery(document).on('click', '#submit_post',function (e) {
 
 
 /*  ==========================================
+    SHOW INITIAL LIST AND GRID CONTENT
+* ========================================== */
+
+/*  ==========================================
+    LIST AND GRID CONTROL TAB
+* ========================================== */
+jQuery(document).on('click','#fr-content .nav-link',function(e){
+    e.preventDefault();
+    jQuery('.fr-content > div').toggleClass('d-none');
+    jQuery('#fr-content .nav-link').toggleClass('active');
+});
+
+/*  ==========================================
     SELECT PRIMARY IMAGE
 * ========================================== */
 

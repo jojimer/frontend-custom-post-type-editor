@@ -19,12 +19,11 @@ define('FFRCRUD_URL',trailingslashit(plugins_url('/',__FILE__)));
 
 class FieldReportShortcodes {
 	private $_user;
-	private $_url = $_SERVER['HTTP_HOST'].'/app/uploads/';
 
 	function __construct(){
 		add_action('admin_menu', [$this, 'pluginSettings']);
 		add_action( 'wp_enqueue_scripts', [$this, 'load_scripts'] );
-		add_shortcode( 'new_field_report_post', [$this, 'addNewFieldReportPost'] );
+		add_shortcode( 'new_field_report_post', [$this, 'getFrontEndTemplate'] );
 		// creating Ajax call for WordPress
 		add_action( 'wp_ajax_nopriv_fr_addpost', [$this, 'fr_addpost'] );
 		add_action( 'wp_ajax_fr_addpost', [$this, 'fr_addpost'] );
@@ -118,7 +117,7 @@ class FieldReportShortcodes {
 	        return $file_return['error'].' '.$file_return['upload_error_handler'];
 	    } else {
 	        $filename = $file_return['file'];
-	        $file_return['url'] = str_replace($this->_url, '', $file_return['url']);
+	        $file_return['url'] = str_replace($_SERVER['HTTP_HOST'].'/app/uploads/', '', $file_return['url']);
 	        $attachment = array(
 	            'post_mime_type' => $file_return['type'],
 	            'post_title' => preg_replace( '/\.[^.]+$/', '', basename( $filename ) ),
@@ -139,8 +138,11 @@ class FieldReportShortcodes {
 
 	// Shortcodes
 	// Display Add New Field Report Post in frontend
-	function addNewFieldReportPost( $atts ){
+	function getFrontEndTemplate( $atts ){
+		// Show Create Post Form
 		if($this->checkUser()) include_once(FFRCRUD_PATH.'includes/create_post.php');
+		// Show Field Reports in Grid and List Tab
+		include_once(FFRCRUD_PATH.'includes/tab.php');
 	}
 
 	// Display Field Report Shortcodes in Admin settings
