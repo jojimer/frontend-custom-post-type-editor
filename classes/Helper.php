@@ -11,7 +11,7 @@ class Helper {
 
   // Check if user is logged-in and a VIP member
   public function checkUser() {
-    if(is_user_logged_in() && in_array( 'vip-member', (array) $this->currentUser->roles ) && $this->profileUser->data->ID == $this->currentUser->ID) return true;
+    if(is_user_logged_in() && (in_array( 'vip-member', (array) $this->currentUser->roles ) || in_array( 'administrator', (array) $this->currentUser->roles )) && $this->profileUser->data->ID == $this->currentUser->ID) return true;
 
     return false;
   }

@@ -1,25 +1,25 @@
 <?php
 	$user = uwp_get_displayed_user();
-	if($user && $user->roles[0] === 'vip-member') {
+	//if($user && ($user->roles[0] === 'vip-member' || $user->roles[0] === 'administrator')) {
 
 	$args = [
 	    'author' => $user->data->ID,
 	    'post_type' => 'field-report',
 	    'order' => 'DESC',
-	    'posts_per_page' => -1,
+	    'posts_per_page' => 6,
+	    'offset' => 0
 	];
 
 	$query = get_posts($args);
 	if(count($query) === 0) return;
 	$countReports = count($query);
-	$initial = ($countReports > 3 ) ? array_slice($query, 0, 4) : $query;
-	wp_reset_postdata();
+	// $initial = ($countReports > 6 ) ? array_slice($query, 0, 6) : $query;
 
 	// Display Loader
 	$html = '<div class="field-reports-loading d-none"><i class="fas fa-circle-notch"></i></div>';
 	
   // Get Pagination
-  if($countReports > 4) {
+  if($countReports > 6) {
     $html .= '<div id="field-reports-pagination"><ul>';
     $numb = 1;            
     for($i = 0; $i < $countReports; $i++){
@@ -45,39 +45,67 @@
 	</ul>
 	<div class="fr-content">
 		<div class="d-none row p-4" id="fr-list">
-			<?php	foreach ($initial as $key => $value) { ?>
-				<div class="col-12 mb-4">
-			    <div class="card">
-			      <div class="card-body d-flex">
-			      	<div class="fr-thumbnail col-3">
-			      		<img class="img-thumbnail" src="https://mmagazine.local/app/uploads/2021/10/zion-canyon1-scaled.jpg" alt="">
-			      	</div>
-			        <div class="fr-content col-9">
-			        	<h5 class="card-title">Card title</h5>
-				        <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-			        </div>
-			      </div>
-			    </div>
-			  </div>
-			 <?php } ?>
+<?php	foreach ($query as $post) :
+				$images = get_field('images',$post->ID); 
+				$image = wp_get_attachment_image_src($images[0]['image'],'medium')[0]; ?>
+					<div class="col-12 mb-4">
+				    <div class="card">
+				      <div class="card-body d-flex px-2">
+				      	<div class="fr-thumbnail col-3">
+				      		<div class="fr-d-grid">
+				      		<?php
+				      		$images = get_field('images',$post->ID);
+				      		$imageCount = count($images);
+				      		$images = ($imageCount > 8 ) ? array_slice($images, 0, 8) : $images;
+				      		foreach($images as $image) : 
+									$img = wp_get_attachment_image_src($image['image'],'medium'); ?>
+									<div class="img-thumb-wrap">
+									<img class="img-thumbnail" src="<?php echo $img[0]; ?>" alt="<?php echo $post->post_title; ?>"></div>
+								<?php endforeach; 
+								  	if($imageCount > 7){
+								  		echo '<div class="img-thumb-wrap fr-link"><a href="'.$post->guid.'">'.$imageCount.'+</a></div>';
+								  	}
+								 ?>							  
+				      	</div>
+				      	</div>
+				        <div class="fr-content col-9">
+				        	<h5 class="card-title fr-link"><?php echo '<a href="'.$post->guid.'">'.$post->post_title.'</a>'; ?></h5>
+					        <p class="card-text fr-link"><?php echo wp_trim_words( $post->post_excerpt, $num_words = 120, '... <a class="mt-3 float-right" href="'.$post->guid.'"> Read More ></a>' ) ?></p>
+				        </div>
+				      </div>
+				    </div>
+				  </div>
+<?php endforeach; // Posts ?>
 		</div>
 		<div class="row p-4" id="fr-grid">
-			<?php	foreach ($initial as $key => $value) { ?>
+<?php foreach ($query as $post) :	?>
 				<div class="col-4 mb-4">
 			    <div class="card">
-			      <div class="card-body">
-			      		<img class="img-thumbnail" src="https://mmagazine.local/app/uploads/2021/10/zion-canyon1-scaled.jpg" alt="">
-			        	<h5 class="card-title">Card title</h5>
-				        <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+			      <div class="card-body p-4">
+			      	<div class="fr-d-grid">
+			      		<?php
+			      		$images = get_field('images',$post->ID);
+			      		$imageCount = count($images);
+			      		$images = ($imageCount > 8 ) ? array_slice($images, 0, 8) : $images;
+			      		foreach($images as $image) : 
+								$img = wp_get_attachment_image_src($image['image'],'medium'); ?>
+								<div class="img-thumb-wrap">
+								<img class="img-thumbnail" src="<?php echo $img[0]; ?>" alt="<?php echo $post->post_title; ?>"></div>
+							<?php endforeach; 
+							  	if($imageCount > 7){
+							  		echo '<div class="img-thumb-wrap fr-link"><a href="'.$post->guid.'">'.$imageCount.'+</a></div>';
+							  	}
+							 ?>							  
+			      	</div>			      		
+			        	<h5 class="card-title fr-link"><?php echo '<a href="'.$post->guid.'">'.$post->post_title.'</a>'; ?></h5>
+				        <p class="card-text fr-link"><?php echo wp_trim_words( $post->post_excerpt, $num_words = 25, '... <br><a class="mt-3 float-right" href="'.$post->guid.'"> Read More ></a>' ) ?></p>
 			      </div>
 			    </div>
 			  </div>
-			 <?php } ?>
+<?php endforeach; ?>
 		</div>
 	</div>
 	<div class="my-4">
-		<?php echo $html; ?>
+		<?php echo $html; wp_reset_postdata(); ?>
 	</div>
 </div>
-
-<?php }

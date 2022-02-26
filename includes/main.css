@@ -43,3 +43,35 @@ form#primaryPostForm .content-images-preview img {
     color: #518ff7;
     cursor: auto;
 }
+
+.card-body > .fr-d-grid {    
+    margin-bottom: 1rem;
+}
+
+.fr-d-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 80px;
+    column-gap: 2px;
+    row-gap: 2px;
+}
+
+.img-thumb-wrap .img-thumbnail {
+    height: 80px;
+    object-fit: cover;
+    width: 100%;
+    padding: 0;
+}
+
+.img-thumb-wrap.fr-link {
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    display: flex;
+    font-size: 2rem;
+}
+
+.fr-link a {
+    text-decoration: none !important;    
+}

@@ -3,7 +3,6 @@ include_once FFRCRUD_PATH.'classes/Helper.php';
 
 class Template {
   private $_pluginPath;
-  private $_helper;
 
   public function __construct(){
     $this->_pluginPath = FFRCRUD_PATH;

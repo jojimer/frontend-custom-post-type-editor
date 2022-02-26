@@ -109,7 +109,6 @@ jQuery(document).on('click', '#submit_post',function (e) {
     submitData(postData,this);
 })
 
-
 /*  ==========================================
     SHOW INITIAL LIST AND GRID CONTENT
 * ========================================== */
