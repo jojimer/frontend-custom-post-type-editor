@@ -13,6 +13,11 @@
     cursor: pointer;
 }
 
+form#primaryPostForm {
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 3rem;
+}
+
 form#primaryPostForm .content-images-preview ul {
     display: flex;
     flex-wrap: wrap;
@@ -42,6 +47,48 @@ form#primaryPostForm .content-images-preview img {
 #fr-content .nav-link.active {
     color: #518ff7;
     cursor: auto;
+}
+
+.card-body .fr-action-wrap {
+    position: absolute;
+    display: flex;
+    right: 0;
+    top: 0;
+    justify-content: end;
+    opacity: 0;
+    padding-top: 0.5rem;
+    padding-right: 0.5rem;
+    z-index: 2;
+}
+
+.card-body:hover .fr-action-wrap{
+    opacity: 1;
+}
+
+.card-body .fr-action-wrap span {
+    height: 2.3rem;
+    justify-content: center;
+    align-items: center;
+    width: 2.3rem;
+    display: flex;
+    margin-left: 0.4rem;
+    border-radius: 50%;
+    font-size: 1.25rem;
+    cursor: pointer;
+    border: 1px solid rgb(239 239 239 / 75%);
+    background-color: rgba(255,255,255, 0.75);
+}
+
+.card-body .fr-action-wrap span:first-child:hover {
+    border-color: #518ff7;
+    background-color: #518ff7;
+    color: white;
+}
+
+.card-body .fr-action-wrap span:last-child:hover {
+    border-color: #b04c4e;
+    background-color: #b04c4e;
+    color:  white;
 }
 
 .card-body > .fr-d-grid {    

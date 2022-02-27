@@ -1,4 +1,4 @@
-<form class="px-3 mb-5" id="primaryPostForm" method="POST" enctype="multipart/form-data">
+<form class="px-4 mb-5 d-none" id="primaryPostForm" method="POST" enctype="multipart/form-data">
    <div class="row">
       <div id="fr-crud-response" class="my-3"></div>
       <div class="col-7">

@@ -1,16 +1,14 @@
 /*  ==========================================
     GET INPUT AND UPLOAD LABEL ELEMENT
 * ========================================== */
-var input = document.getElementById( 'upload' );
-var infoArea = document.getElementById( 'upload-label' );
-var ulPrev = document.getElementById('fr-images-prev');
 var imageFiles = Array();
 
 /*  ==========================================
     SHOW UPLOADED IMAGE
 * ========================================== */
 function readURL(image) {
-        var reader = new FileReader();
+        let ulPrev = document.getElementById('fr-images-prev');
+        let reader = new FileReader();
 
         reader.onload = function (e) {
             var li = document.createElement('li');
@@ -27,6 +25,7 @@ function readURL(image) {
 
 function mapImagesAndCreatePreview(input) {
     let fileNames;
+    let infoArea = document.getElementById( 'upload-label' );
     if (input.files && input.files[0]) {
         for (var key in input.files) {
           if (input.files.hasOwnProperty(key)) {
@@ -72,6 +71,8 @@ function submitData(postData,button) {
 
 function resetvalues(){
     let form = document.getElementById('primaryPostForm');
+    let infoArea = document.getElementById( 'upload-label' );
+    let ulPrev = document.getElementById('fr-images-prev');
     let allInputs = form.querySelectorAll('.form-control:not(input[type=file])');
     for(let i=0; allInputs.length > i; i++){
         allInputs[i].value = "";
@@ -92,9 +93,21 @@ function removeAlert(button,status,data){
     },2500);
 }
 
-jQuery('#upload').on('change', function () {
+jQuery(document).on('change','#upload', function () {
+    var input = document.getElementById( 'upload' );
     mapImagesAndCreatePreview(input);
 });
+
+jQuery(document).on('click','#toggle-fr-form',function () {
+    jQuery('#primaryPostForm').toggleClass('d-none');
+    jQuery(this).toggleClass('form-is-active');
+    jQuery(this).find('.fr-btn-icon:nth-child(2)').toggleClass('d-none');
+    jQuery(this).find('.fr-btn-icon:first-child').toggleClass('d-none');
+    jQuery(this).find('.fr-btn-text').text(function(i, text){
+        return text === " Cancel" ? " Add Report" : " Cancel";
+    })
+
+})
 
 jQuery(document).on('click', '#submit_post',function (e) {
     e.preventDefault();

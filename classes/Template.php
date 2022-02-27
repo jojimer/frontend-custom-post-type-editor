@@ -12,7 +12,15 @@ class Template {
   public function getFrontEndTemplate( $atts ){
     $help = new Helper;
     // Show Create Post Form
-    if($help->checkUser()) include_once($this->_pluginPath.'includes/template/create_post.php');
+    if($help->checkUser()) {
+      ?> 
+      <button id="toggle-fr-form" class="btn btn-primary d-block mb-4 ml-auto mr-4 px-5">
+        <span class="fr-btn-icon"><i class="fas fa-paper-plane"></i></span>
+        <span class="fr-btn-icon d-none"><i class="fas fa-times"></i></span>
+        <span class="fr-btn-text"> Add Report</span></button>
+      <?php
+      include_once($this->_pluginPath.'includes/template/create_post.php');
+    } 
     // Show Field Reports in Grid and List Tab
     include_once($this->_pluginPath.'includes/template/tab.php');
   }

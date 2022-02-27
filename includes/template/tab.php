@@ -1,5 +1,7 @@
 <?php
+	include_once FFRCRUD_PATH.'classes/Helper.php';
 	$user = uwp_get_displayed_user();
+	$help = new Helper;
 	//if($user && ($user->roles[0] === 'vip-member' || $user->roles[0] === 'administrator')) {
 
 	$args = [
@@ -34,7 +36,7 @@
   }
 ?>
 
-<div id="fr-content" class="px-3">
+<div id="fr-content" class="px-4">
 	<ul class="nav nav-tabs justify-content-end">
 	  <li class="nav-item">
 	    <button class="nav-link" data-view="list"><i class="fas fa-list"></i></button>
@@ -51,6 +53,12 @@
 					<div class="col-12 mb-4">
 				    <div class="card">
 				      <div class="card-body d-flex px-2">
+				      	<?php if($help->checkUser()) { ?>
+				      	<div class="fr-action-wrap">
+				      		<span class="fr-edit" title="Edit"><i class="fas fa-pencil-alt"></i></span>
+				      		<span class="fr-delete" title="Delete"><i class="fas fa-times"></i></span>
+				      	</div>
+				      	<?php } ?>
 				      	<div class="fr-thumbnail col-3">
 				      		<div class="fr-d-grid">
 				      		<?php
@@ -81,7 +89,13 @@
 <?php foreach ($query as $post) :	?>
 				<div class="col-4 mb-4">
 			    <div class="card">
-			      <div class="card-body p-4">
+			      <div class="card-body p-4 position-relative">
+			      	<?php if($help->checkUser()) { ?>
+			      	<div class="fr-action-wrap">
+			      		<span class="fr-edit" title="Edit"><i class="fas fa-pencil-alt"></i></span>
+			      		<span class="fr-delete" title="Delete"><i class="fas fa-times"></i></span>
+			      	</div>
+			      	<?php } ?>
 			      	<div class="fr-d-grid">
 			      		<?php
 			      		$images = get_field('images',$post->ID);
@@ -97,8 +111,8 @@
 							  	}
 							 ?>							  
 			      	</div>			      		
-			        	<h5 class="card-title fr-link"><?php echo '<a href="'.$post->guid.'">'.$post->post_title.'</a>'; ?></h5>
-				        <p class="card-text fr-link"><?php echo wp_trim_words( $post->post_excerpt, $num_words = 25, '... <br><a class="mt-3 float-right" href="'.$post->guid.'"> Read More ></a>' ) ?></p>
+			        <h5 class="card-title fr-link"><?php echo '<a href="'.$post->guid.'">'.$post->post_title.'</a>'; ?></h5>
+				      <p class="card-text fr-link"><?php echo wp_trim_words( $post->post_excerpt, $num_words = 25, '... <br><a class="mt-3 float-right" href="'.$post->guid.'"> Read More ></a>' ) ?></p>
 			      </div>
 			    </div>
 			  </div>
