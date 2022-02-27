@@ -39,6 +39,16 @@ form#primaryPostForm .content-images-preview img {
     object-fit: cover;
 }
 
+#toggle-fr-form.form-is-active {
+    background-color: #db383b !important;
+    border-color: #db383b !important;
+}
+
+#toggle-fr-form.form-is-active:hover {
+    background-color: #c82427 !important;
+    border-color: #be2225 !important;
+}
+
 #fr-content .nav-link {
     color: #4a586e;
     background-color: transparent;
@@ -86,8 +96,8 @@ form#primaryPostForm .content-images-preview img {
 }
 
 .card-body .fr-action-wrap span:last-child:hover {
-    border-color: #b04c4e;
-    background-color: #b04c4e;
+    border-color: #db383b;
+    background-color: #db383b;
     color:  white;
 }
 

@@ -1,23 +1,23 @@
 <?php
-include_once FFRCRUD_PATH.'classes/Helper.php';
 
 class Upload {
 	private $_urlPath;
-	public function __construct(){
+	private $_help;
+	public function __construct($helper){
     $this->_urlPath = ABSPATH;
+    $this->_help = $helper;
   }
 
 	// Create New Field Report Post
 	function addpost() {
 	    $results = '';
 	    $post_id = null;
-	    $help = new Helper;
 	 		
-	 		if($help->checkUser() && isset($_POST['post_title']) && isset($_POST['post_caption']) && isset($_POST['post_tags']) && $_FILES['images']) :
+	 		if($this->_help->checkUser() && isset($_POST['post_title']) && isset($_POST['post_caption']) && isset($_POST['post_tags']) && $_FILES['images']) :
 
 		    $title = wp_strip_all_tags($_POST['post_title']);
 		    $excerpt =  wp_strip_all_tags($_POST['post_caption']);
-		    $author = $help->currentUser->ID;
+		    $author = $this->_help->currentUser->ID;
 		    $tags = explode(',', preg_replace("/\s*,\s*/", ",", $_POST['post_tags']));
 		 	//die("Test Javascript Stop Posting Dummy"); // This line is for testing only, this will stop user from posting dummy
 		    $post_id = wp_insert_post( array(
@@ -54,7 +54,7 @@ class Upload {
 	    if ( $post_id != 0 && $post_id != null)
 	    {
 	    		wp_set_object_terms( $post_id, $tags, 'tags' );
-	        $results = 'Field Report Added.';
+	        $results = 'Field Report Added';
 	    }
 	    else {
 	        $results = 'Error occurred while adding the post!';

@@ -2,6 +2,7 @@
     GET INPUT AND UPLOAD LABEL ELEMENT
 * ========================================== */
 var imageFiles = Array();
+var $ = window.jQuery;
 
 /*  ==========================================
     SHOW UPLOADED IMAGE
@@ -46,24 +47,21 @@ function mapImagesAndCreatePreview(input) {
 /*  ==========================================
     AJAX SUBMIT DATA
 * ========================================== */
-function submitData(postData,button) {
-    //console.log(postData.getAll('post_tags'), postData.getAll('post_title'));
-    jQuery.ajax({
+function submitData(postData,callback) {
+    $.ajax({
  
         type: 'POST', 
-        url: fr_crudajax.ajax_url, 
+        url: fr_crudajax.ajax_url,
         data: postData,
         processData: false,
         contentType: false,
  
         success: function(data, textStatus, XMLHttpRequest) {
-            removeAlert(button,true,data)
-            resetvalues();
+            callback(data,true);
         },
  
         error: function(data, textStatus, errorThrown) {
-            //alert(errorThrown);
-            removeAlert(button,false,data);
+            callback(data,false);
         }
  
     });
@@ -93,48 +91,40 @@ function removeAlert(button,status,data){
     },2500);
 }
 
-jQuery(document).on('change','#upload', function () {
+$(document).on('change','#upload', function () {
     var input = document.getElementById( 'upload' );
     mapImagesAndCreatePreview(input);
 });
 
-jQuery(document).on('click','#toggle-fr-form',function () {
-    jQuery('#primaryPostForm').toggleClass('d-none');
-    jQuery(this).toggleClass('form-is-active');
-    jQuery(this).find('.fr-btn-icon:nth-child(2)').toggleClass('d-none');
-    jQuery(this).find('.fr-btn-icon:first-child').toggleClass('d-none');
-    jQuery(this).find('.fr-btn-text').text(function(i, text){
+$(document).on('click','#toggle-fr-form',function () {
+    $('#primaryPostForm').toggleClass('d-none');
+    $(this).toggleClass('form-is-active');
+    $(this).find('.fr-btn-icon:nth-child(2)').toggleClass('d-none');
+    $(this).find('.fr-btn-icon:first-child').toggleClass('d-none');
+    $(this).find('.fr-btn-text').text(function(i, text){
         return text === " Cancel" ? " Add Report" : " Cancel";
     })
 
 })
 
-jQuery(document).on('click', '#submit_post',function (e) {
+$(document).on('click', '#submit_post',function (e) {
     e.preventDefault();
     var Form = document.getElementById('primaryPostForm');
     var postData = new FormData(Form);
     imageFiles.map(val => {
         postData.append('images[]',val);
     })
-    postData.append('action','fr_addpost');
+    postData.append('action','fr_request');
+    postData.append('action_type','post');
     postData.delete('files[]');
     this.textContent = 'Uploading...';
-    submitData(postData,this);
+    submitData(postData,function(data,result){
+        removeAlert(this,result,data);
+        resetvalues();
+    });
 })
 
-/*  ==========================================
-    SHOW INITIAL LIST AND GRID CONTENT
-* ========================================== */
-
-/*  ==========================================
-    LIST AND GRID CONTROL TAB
-* ========================================== */
-jQuery(document).on('click','#fr-content .nav-link',function(e){
-    e.preventDefault();
-    jQuery('.fr-content > div').toggleClass('d-none');
-    jQuery('#fr-content .nav-link').toggleClass('active');
-});
-
+// To DO 
 /*  ==========================================
     SELECT PRIMARY IMAGE
 * ========================================== */
@@ -142,3 +132,62 @@ jQuery(document).on('click','#fr-content .nav-link',function(e){
 /*  ==========================================
     REMOVE IMAGE FROM PREVIEW IMAGE
 * ========================================== */
+
+
+/*  ==========================================
+    LIST AND GRID CONTROL TAB
+* ========================================== */
+$(document).on('click','#fr-content .nav-link',function(e){
+    e.preventDefault();
+    $('.fr-content > div').toggleClass('d-none');
+    $('#fr-content .nav-link').toggleClass('active');
+});
+
+/*  ==========================================
+    DELETE FIELD REPORT
+* ========================================== */
+
+$(document).on('click','span.fr-delete',function(){
+    let id = $(this).data('post-id');
+    let title = $(this).data('post-title');
+    $('.modal#deleteReport #submitDelete').attr('data-post-id',id);
+    $('#deleteReport .modal-body').html('<p class="h5">Are you sure you want to delete?</p> <p class="h6">"'+title+'"</p>');
+});
+
+$(document).on('click','#submitDelete',function(){
+    let id = $(this).data('post-id');
+    let postData = new FormData();
+
+    postData.append('action','fr_request');
+    postData.append('action_type','delete');
+    postData.append('postID',id);
+
+    $(this).text('Deleting...');
+
+    submitData(postData,function(data,result){
+        if(result){
+            $('#submitDelete').text('Deleted');
+            alert('Report is successfully deleted');
+            resetDeleteModal($('#submitDelete'),id);
+        }else{
+            alert('Something wen\'t wrong!');
+            resetDeleteModal($('#submitDelete'));
+        }
+    });
+})
+
+function resetDeleteModal(button,id = false){
+    if(id){        
+        $('#deleteReport').modal('toggle');
+        $('.report'+id).remove();
+
+        let reportRemaining = document.querySelectorAll('.report-item');
+        let nothingToShow = '<div class="col-12 pt-5"><p class="h2 text-center my-5">Nothing to show!</p></div>';
+        if(reportRemaining.length === 0) {
+            $('#fr-list').append(nothingToShow);
+            $('#fr-grid').append(nothingToShow);
+        }
+    }
+
+    button.text('Yes');
+}

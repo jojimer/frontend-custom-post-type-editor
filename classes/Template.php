@@ -14,11 +14,13 @@ class Template {
     // Show Create Post Form
     if($help->checkUser()) {
       ?> 
-      <button id="toggle-fr-form" class="btn btn-primary d-block mb-4 ml-auto mr-4 px-5">
+      <button id="toggle-fr-form" class="btn btn-primary mt-5 d-block mb-4 ml-auto mr-4 px-5">
         <span class="fr-btn-icon"><i class="fas fa-paper-plane"></i></span>
         <span class="fr-btn-icon d-none"><i class="fas fa-times"></i></span>
-        <span class="fr-btn-text"> Add Report</span></button>
+        <span class="fr-btn-text"> Add Report</span>
+      </button>
       <?php
+      include_once($this->_pluginPath.'includes/template/modal.php');
       include_once($this->_pluginPath.'includes/template/create_post.php');
     } 
     // Show Field Reports in Grid and List Tab

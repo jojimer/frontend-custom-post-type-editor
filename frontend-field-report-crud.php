@@ -22,25 +22,25 @@ define('FFRCRUD_URL',trailingslashit(plugins_url('/',__FILE__)));
  * 
 */
 include_once FFRCRUD_PATH.'classes/Template.php';
-include_once FFRCRUD_PATH.'classes/Upload.php';
+include_once FFRCRUD_PATH.'classes/Control.php';
 
 class FieldReportShortcodes {
 	private $_template;
-	private $_upload;
+	private $_control;
 
 	function __construct(){
 		//Instanciate Classes
 		$this->_template = new Template;
-		$this->_upload = new Upload;
+		$this->_control = new Control;
 
 		//Initiate Plugin Settings 
 		add_action('admin_menu', [$this, 'pluginPage']);
 		add_action('wp_enqueue_scripts', [$this, 'load_scripts']);
 		add_shortcode('new_field_report_post', [$this, 'load_frontend']);
 
-		//Creating Ajax call for WordPress
-		add_action('wp_ajax_nopriv_fr_addpost', [$this, 'add_post']);
-		add_action('wp_ajax_fr_addpost', [$this, 'add_post']);
+		//Creating Ajax call to add, update, delete field report
+		add_action('wp_ajax_nopriv_fr_request', [$this, 'control_process']);
+		add_action('wp_ajax_fr_request', [$this, 'control_process']);
 	}
 
 	// Add Plugin Page on settings menu
@@ -63,8 +63,8 @@ class FieldReportShortcodes {
 		return $this->_template->getFrontEndTemplate($attr);
 	}
 
-	function add_post(){
-		return $this->_upload->addpost();
+	function control_process(){
+		return $this->_control->processRequest();
 	}
 
 	function show_shortcode_in_admin(){

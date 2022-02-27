@@ -50,13 +50,20 @@
 <?php	foreach ($query as $post) :
 				$images = get_field('images',$post->ID); 
 				$image = wp_get_attachment_image_src($images[0]['image'],'medium')[0]; ?>
-					<div class="col-12 mb-4">
+					<div class="col-12 mb-4 report<?php echo $post->ID; ?> report-item">
 				    <div class="card">
 				      <div class="card-body d-flex px-2">
 				      	<?php if($help->checkUser()) { ?>
 				      	<div class="fr-action-wrap">
 				      		<span class="fr-edit" title="Edit"><i class="fas fa-pencil-alt"></i></span>
-				      		<span class="fr-delete" title="Delete"><i class="fas fa-times"></i></span>
+				      		<span class="fr-delete"
+				      		  data-post-id="<?php echo $post->ID; ?>"
+				      		  data-post-title="<?php echo $post->post_title; ?>"
+				      		  title="Delete" 
+				      		  data-toggle="modal" 
+				      		  data-target="#deleteReport">
+				      		  	<i class="fas fa-times"></i>
+				      		</span>
 				      	</div>
 				      	<?php } ?>
 				      	<div class="fr-thumbnail col-3">
@@ -87,13 +94,20 @@
 		</div>
 		<div class="row p-4" id="fr-grid">
 <?php foreach ($query as $post) :	?>
-				<div class="col-4 mb-4">
+				<div class="col-4 mb-4 report<?php echo $post->ID; ?> report-item">
 			    <div class="card">
 			      <div class="card-body p-4 position-relative">
 			      	<?php if($help->checkUser()) { ?>
 			      	<div class="fr-action-wrap">
 			      		<span class="fr-edit" title="Edit"><i class="fas fa-pencil-alt"></i></span>
-			      		<span class="fr-delete" title="Delete"><i class="fas fa-times"></i></span>
+			      		<span class="fr-delete"
+			      		  data-post-id="<?php echo $post->ID; ?>"
+			      		  data-post-title="<?php echo $post->post_title; ?>"
+			      		  title="Delete" 
+			      		  data-toggle="modal" 
+			      		  data-target="#deleteReport">
+			      		  	<i class="fas fa-times"></i>
+			      		</span>
 			      	</div>
 			      	<?php } ?>
 			      	<div class="fr-d-grid">
