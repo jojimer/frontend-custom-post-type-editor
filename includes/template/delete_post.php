@@ -1,6 +1,6 @@
 <!-- Delete Report Modal Content -->
 <div class="modal-header">
-  <h6 class="modal-title" id="deleteReportLabel">Delete Report</h6>
+  <h5 class="modal-title font-weight-bold" id="deleteReportLabel">Delete Report</h5>
   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
     <span aria-hidden="true">&times;</span>
   </button>

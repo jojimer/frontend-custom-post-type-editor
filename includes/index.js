@@ -13,7 +13,8 @@ function readURL(image) {
 
         reader.onload = function (e) {
             let li = document.createElement('li');
-            let img = '<img src="'+e.target.result+'">';            
+            let img = '<button type="button" class="close text-danger" aria-label="Close"><span aria-hidden="true">×</span></button>';
+            img += '<img src="'+e.target.result+'">';            
             li.innerHTML = img;
             ulPrev.append(li);
         };
@@ -69,10 +70,10 @@ function submitData(postData,callback) {
     });
 }
 
-function resetvalues(){
-    let form = document.getElementById('primaryPostForm');
-    let infoArea = document.getElementById( 'upload-label' );
-    let ulPrev = document.getElementById('fr-images-prev');
+function resetvalues(id){
+    let form = document.getElementById(id);
+    let infoArea = form.querySelector( '#upload-label' );
+    let ulPrev = form.querySelector('#fr-images-prev');
     let allInputs = form.querySelectorAll('.form-control:not(input[type=file])');
     for(let i=0; allInputs.length > i; i++){
         allInputs[i].value = "";
@@ -122,7 +123,7 @@ $(document).on('click', '#submit_post',function (e) {
     this.textContent = 'Uploading...';
     submitData(postData,function(data,result){
         removeAlert(this,result,data);
-        resetvalues();
+        resetvalues('primaryPostForm');
     });
 })
 
@@ -188,9 +189,10 @@ $(document).on('click','#submitUpdate',function(e){
     postData.append('postID',id);
     this.textContent = 'Updating...';
     submitData(postData,function(data,result){
-        //removeAlert(this,result,data);
-        //resetvalues();
-        console.log(data);
+        $('#submitUpdate').text('Updated');
+        setTimeout(function(){            
+            $('#submitUpdate').text('Update');
+        },2000)
     });
 })
 
@@ -200,13 +202,18 @@ $(document).on('click','#submitUpdate',function(e){
 function showEditPreviewImages(images){
     let ulPrev = $('#editReportForm #fr-images-prev');
 
-    images.map(val => {
+    images.map((val,i) => {
         let li = document.createElement('li');
-        let img = '<img data-img-id="'+val.id+'" src="'+val.thumbnail+'">';            
+        let img = '<button type="button" class="close text-danger" data-img-index="'+i+'" aria-label="Close"><span aria-hidden="true">×</span></button>';
+        img += '<img data-img-id="'+val.id+'" src="'+val.thumbnail+'">';            
         li.innerHTML = img;
         ulPrev.append(li);
     })    
 }
+
+$(document).on('click','#editReport button.close span',function(){
+    resetvalues('editReportForm');
+})
 
 /*  ==========================================
     DELETE FIELD REPORT

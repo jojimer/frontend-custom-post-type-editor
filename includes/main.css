@@ -33,6 +33,20 @@ form#editReportForm .content-images-preview li {
     margin-right: 5px;
     margin-bottom: 5px;
     cursor: pointer;
+    position: relative;
+}
+
+form#primaryPostForm .content-images-preview li>button,
+form#editReportForm .content-images-preview li>button {
+    right: -8px;
+    position: absolute;
+    top: -13px;
+    display: none;
+}
+
+form#primaryPostForm .content-images-preview li:hover>button,
+form#editReportForm .content-images-preview li:hover>button {
+    display: unset;
 }
 
 form#primaryPostForm .content-images-preview img,
