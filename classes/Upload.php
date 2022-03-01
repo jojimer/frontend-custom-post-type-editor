@@ -9,7 +9,7 @@ class Upload {
   }
 
 	// Create New Field Report Post
-	function addpost() {
+	function addReport() {
 	    $results = '';
 	    $post_id = null;
 	 		
@@ -74,7 +74,7 @@ class Upload {
 	        return $file_return['error'].' '.$file_return['upload_error_handler'];
 	    } else {
 	        $filename = $file_return['file'];
-	        $file_return['url'] = str_replace('https://'.$_SERVER['HTTP_HOST'].'/app/uploads/', '', $file_return['url']);
+	        $file_return['url'] = (str_contains($file_return['url'], 'https://')) ? str_replace('https://'.$_SERVER['HTTP_HOST'].'/app/uploads/', '', $file_return['url']) : str_replace('http://'.$_SERVER['HTTP_HOST'].'/app/uploads/', '', $file_return['url']);
 	        $attachment = array(
 	            'post_mime_type' => $file_return['type'],
 	            'post_title' => preg_replace( '/\.[^.]+$/', '', basename( $filename ) ),

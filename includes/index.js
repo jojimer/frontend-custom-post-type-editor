@@ -1,8 +1,8 @@
 /*  ==========================================
     GET INPUT AND UPLOAD LABEL ELEMENT
 * ========================================== */
-var imageFiles = Array();
-var $ = window.jQuery;
+let imageFiles = Array();
+const $ = window.jQuery;
 
 /*  ==========================================
     SHOW UPLOADED IMAGE
@@ -12,8 +12,8 @@ function readURL(image) {
         let reader = new FileReader();
 
         reader.onload = function (e) {
-            var li = document.createElement('li');
-            var img = '<img src="'+e.target.result+'">';            
+            let li = document.createElement('li');
+            let img = '<img src="'+e.target.result+'">';            
             li.innerHTML = img;
             ulPrev.append(li);
         };
@@ -58,10 +58,12 @@ function submitData(postData,callback) {
  
         success: function(data, textStatus, XMLHttpRequest) {
             callback(data,true);
+            //console.log(data, textStatus, XMLHttpRequest)
         },
  
         error: function(data, textStatus, errorThrown) {
             callback(data,false);
+            //console.log(data, textStatus, errorThrown)
         }
  
     });
@@ -144,9 +146,71 @@ $(document).on('click','#fr-content .nav-link',function(e){
 });
 
 /*  ==========================================
+    EDIT FIELD REPORT
+* ========================================== */
+$(document).on('click','span.fr-edit',function(){
+    let id = $(this).data('post-id');
+    getReportToEdit(id,function(data){
+        let report = JSON.parse(data)
+        $('#editReportForm input[name=post_title]').val(report.title);
+        $('#editReportForm textarea[name=post_caption]').val(report.excerpt);
+        $('#editReportForm').attr('data-post-id',report.ID);
+        $('#editReportForm input[name=post_tags]').val(report.tags.map(val => {return val}));
+        showEditPreviewImages(report.images);
+    });
+});
+
+function getReportToEdit(id,callback){
+    let postData = new FormData();
+
+    postData.append('action','fr_request');
+    postData.append('action_type','get');
+    postData.append('postID',id);
+
+    submitData(postData,function(data,result){
+        if(result){
+            callback(data.slice(0, -1));
+        }
+    });
+}
+
+$(document).on('click','#submitUpdate',function(e){
+    e.preventDefault();
+    let Form = document.getElementById('editReportForm');
+    let id = $('#editReportForm').data('post-id');
+    let postData = new FormData(Form);
+    imageFiles.map(val => {
+        postData.append('images[]',val);
+    })
+    postData.append('action','fr_request');
+    postData.append('action_type','update');
+    postData.delete('files[]');
+    postData.append('postID',id);
+    this.textContent = 'Updating...';
+    submitData(postData,function(data,result){
+        //removeAlert(this,result,data);
+        //resetvalues();
+        console.log(data);
+    });
+})
+
+/*  ==========================================
+    SHOW EDIT FIELD REPORT PREVIEW IMAGES
+* ========================================== */
+function showEditPreviewImages(images){
+    let ulPrev = $('#editReportForm #fr-images-prev');
+
+    images.map(val => {
+        let li = document.createElement('li');
+        let img = '<img data-img-id="'+val.id+'" src="'+val.thumbnail+'">';            
+        li.innerHTML = img;
+        ulPrev.append(li);
+    })    
+}
+
+/*  ==========================================
     DELETE FIELD REPORT
 * ========================================== */
-
 $(document).on('click','span.fr-delete',function(){
     let id = $(this).data('post-id');
     let title = $(this).data('post-title');

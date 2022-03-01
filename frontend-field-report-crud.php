@@ -63,12 +63,12 @@ class FieldReportShortcodes {
 		return $this->_template->getFrontEndTemplate($attr);
 	}
 
-	function control_process(){
-		return $this->_control->processRequest();
-	}
-
 	function show_shortcode_in_admin(){
 		return $this->_template->viewShortcodesInAdmin();
+	}
+
+	function control_process(){
+		return $this->_control->processRequest();
 	}
 }
 

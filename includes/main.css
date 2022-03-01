@@ -18,13 +18,15 @@ form#primaryPostForm {
     padding-bottom: 3rem;
 }
 
-form#primaryPostForm .content-images-preview ul {
+form#primaryPostForm .content-images-preview ul,
+form#editReportForm .content-images-preview ul {
     display: flex;
     flex-wrap: wrap;
     padding-left: 0;
 }
 
-form#primaryPostForm .content-images-preview li {
+form#primaryPostForm .content-images-preview li,
+form#editReportForm .content-images-preview li {
     width: 60px;
     height: 60px;
     list-style: none;
@@ -33,7 +35,8 @@ form#primaryPostForm .content-images-preview li {
     cursor: pointer;
 }
 
-form#primaryPostForm .content-images-preview img {
+form#primaryPostForm .content-images-preview img,
+form#editReportForm .content-images-preview img {
     width: 100%;
     height: 100%;
     object-fit: cover;

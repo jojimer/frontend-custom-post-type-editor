@@ -55,7 +55,14 @@
 				      <div class="card-body d-flex px-2">
 				      	<?php if($help->checkUser()) { ?>
 				      	<div class="fr-action-wrap">
-				      		<span class="fr-edit" title="Edit"><i class="fas fa-pencil-alt"></i></span>
+				      		<span class="fr-edit"
+				      		  data-post-id="<?php echo $post->ID; ?>"
+				      		  data-post-title="<?php echo $post->post_title; ?>"
+				      		  title="Edit"
+				      		  data-toggle="modal"
+				      		  data-target="#editReport">
+				      		 	<i class="fas fa-pencil-alt"></i>
+				      		</span>
 				      		<span class="fr-delete"
 				      		  data-post-id="<?php echo $post->ID; ?>"
 				      		  data-post-title="<?php echo $post->post_title; ?>"
@@ -99,7 +106,14 @@
 			      <div class="card-body p-4 position-relative">
 			      	<?php if($help->checkUser()) { ?>
 			      	<div class="fr-action-wrap">
-			      		<span class="fr-edit" title="Edit"><i class="fas fa-pencil-alt"></i></span>
+			      		<span class="fr-edit"
+			      		  data-post-id="<?php echo $post->ID; ?>"
+			      		  data-post-title="<?php echo $post->post_title; ?>"
+			      		  title="Edit"
+			      		  data-toggle="modal"
+			      		  data-target="#editReport">
+			      		 	<i class="fas fa-pencil-alt"></i>
+			      		</span>
 			      		<span class="fr-delete"
 			      		  data-post-id="<?php echo $post->ID; ?>"
 			      		  data-post-title="<?php echo $post->post_title; ?>"
