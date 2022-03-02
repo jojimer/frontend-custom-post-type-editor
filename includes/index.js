@@ -1,3 +1,8 @@
+// To DO List
+/*  ==========================================
+    SELECT PRIMARY IMAGE
+* ========================================== */
+
 /*  ==========================================
     GET INPUT AND UPLOAD LABEL ELEMENT
 * ========================================== */
@@ -7,14 +12,14 @@ const $ = window.jQuery;
 /*  ==========================================
     SHOW UPLOADED IMAGE
 * ========================================== */
-function readURL(image) {
+function readURL(image,name) {
         let ulPrev = document.getElementById('fr-images-prev');
         let reader = new FileReader();
 
         reader.onload = function (e) {
             let li = document.createElement('li');
-            let img = '<button type="button" class="close text-danger" aria-label="Close"><span aria-hidden="true">×</span></button>';
-            img += '<img src="'+e.target.result+'">';            
+            let img = '<button type="button" data-name="'+name+'" class="close text-danger" aria-label="Close"><span aria-hidden="true">×</span></button>';
+            img += '<img src="'+e.target.result+'" title="'+name+'">';
             li.innerHTML = img;
             ulPrev.append(li);
         };
@@ -24,14 +29,18 @@ function readURL(image) {
 /*  ==========================================
     SHOW IMAGE PREVIEW
 * ========================================== */
+$(document).on('change','#upload', function () {
+    let input = document.getElementById( 'upload' );
+    mapImagesAndCreatePreview(input);
+});
 
 function mapImagesAndCreatePreview(input) {
     let fileNames;
-    let infoArea = document.getElementById( 'upload-label' );
+    let infoArea = document.querySelector( '#primaryPostForm #upload-label' );
     if (input.files && input.files[0]) {
         for (var key in input.files) {
           if (input.files.hasOwnProperty(key)) {
-            readURL(input.files[key]);
+            readURL(input.files[key],input.files[key].name);
             fileNames = (key < 1) ? input.files[key].name+', ' : fileNames+' '+input.files[key].name+', ';
             imageFiles = [...imageFiles,input.files[key]];
           }
@@ -44,6 +53,24 @@ function mapImagesAndCreatePreview(input) {
         }
     }
 }
+
+/*  ==========================================
+    REMOVE IMAGE FROM PREVIEW
+* ========================================== */
+$(document).on('click','#primaryPostForm #fr-images-prev li button',function(){
+    let input = document.getElementById( 'upload' );
+    let name = $(this).data('name');
+    let li = $(this).parents('li');
+    li.remove();
+    let allLi = document.querySelectorAll('#primaryPostForm #fr-images-prev li');
+    imageFiles.filter(function(value, index, arr){ 
+        if(value.name == name) imageFiles.splice(index,1); 
+    });
+    // allLi.forEach((li,i)=>{
+    //     li.firstChild.dataset.index = i;
+    // });
+    console.log(imageFiles);
+});
 
 /*  ==========================================
     AJAX SUBMIT DATA
@@ -94,11 +121,6 @@ function removeAlert(button,status,data){
     },2500);
 }
 
-$(document).on('change','#upload', function () {
-    var input = document.getElementById( 'upload' );
-    mapImagesAndCreatePreview(input);
-});
-
 $(document).on('click','#toggle-fr-form',function () {
     $('#primaryPostForm').toggleClass('d-none');
     $(this).toggleClass('form-is-active');
@@ -126,16 +148,6 @@ $(document).on('click', '#submit_post',function (e) {
         resetvalues('primaryPostForm');
     });
 })
-
-// To DO 
-/*  ==========================================
-    SELECT PRIMARY IMAGE
-* ========================================== */
-
-/*  ==========================================
-    REMOVE IMAGE FROM PREVIEW IMAGE
-* ========================================== */
-
 
 /*  ==========================================
     LIST AND GRID CONTROL TAB

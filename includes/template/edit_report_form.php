@@ -26,7 +26,7 @@
                <ul id="fr-images-prev"></ul>
             </div>
             <div id="fr-Upload" class="input-group mb-3 px-2 py-2 rounded-pill bg-white shadow-sm">
-               <input id="upload" type="file" class="form-control border-0" accept="image/png, image/gif, image/jpeg" multiple name="files[]">
+               <input id="upload_update" type="file" class="form-control border-0" accept="image/png, image/gif, image/jpeg" multiple name="files[]">
                <label id="upload-label" for="upload" class="font-weight-light text-muted">Choose file</label>
                <div class="input-group-append">
                     <label for="upload" class="btn btn-light m-0 rounded-pill px-4"> <i class="fas fa-cloud-upload-alt mr-2 text-muted"></i><small class="text-uppercase font-weight-bold text-muted">Choose file</small></label>
@@ -37,5 +37,5 @@
    <!-- Security field -->
    <?php wp_nonce_field( 'post_nonce', 'post_nonce_field' ); ?>
    <input id="post_author" type="hidden" name="author" value="<?php echo wp_get_current_user()->ID; ?>">
-   <input id="post_ID" type="hidden" name="post_id" value="">
+   <input id="deletingImgID" type="hidden" name="delete_img_id" value="">
 </form>
