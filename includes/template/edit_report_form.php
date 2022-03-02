@@ -1,4 +1,4 @@
-<!-- Create Post Form -->
+<!-- Edit Form -->
 <form class="px-4 mb-5" id="editReportForm" method="POST" enctype="multipart/form-data">
    <div class="row">
       <div id="fr-crud-response" class="my-3"></div>
@@ -26,10 +26,10 @@
                <ul id="fr-images-prev"></ul>
             </div>
             <div id="fr-Upload" class="input-group mb-3 px-2 py-2 rounded-pill bg-white shadow-sm">
-               <input id="upload_update" type="file" class="form-control border-0" accept="image/png, image/gif, image/jpeg" multiple name="files[]">
-               <label id="upload-label" for="upload" class="font-weight-light text-muted">Choose file</label>
+               <input id="upload-update" type="file" class="form-control border-0" accept="image/png, image/gif, image/jpeg" multiple name="files[]">
+               <label id="upload-label" for="upload-update" class="font-weight-light text-muted">Choose file</label>
                <div class="input-group-append">
-                    <label for="upload" class="btn btn-light m-0 rounded-pill px-4"> <i class="fas fa-cloud-upload-alt mr-2 text-muted"></i><small class="text-uppercase font-weight-bold text-muted">Choose file</small></label>
+                    <label for="upload-update" class="btn btn-light m-0 rounded-pill px-4"> <i class="fas fa-cloud-upload-alt mr-2 text-muted"></i><small class="text-uppercase font-weight-bold text-muted">Choose file</small></label>
                </div>
             </div>
       </div>
@@ -37,5 +37,5 @@
    <!-- Security field -->
    <?php wp_nonce_field( 'post_nonce', 'post_nonce_field' ); ?>
    <input id="post_author" type="hidden" name="author" value="<?php echo wp_get_current_user()->ID; ?>">
-   <input id="deletingImgID" type="hidden" name="delete_img_id" value="">
+   <input id="nothingChange" type="hidden" name="nothing_change" value="0">
 </form>

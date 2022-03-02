@@ -7,13 +7,14 @@
     GET INPUT AND UPLOAD LABEL ELEMENT
 * ========================================== */
 let imageFiles = Array();
+let deletingImageIDs = Array();
 const $ = window.jQuery;
 
 /*  ==========================================
     SHOW UPLOADED IMAGE
 * ========================================== */
-function readURL(image,name) {
-        let ulPrev = document.getElementById('fr-images-prev');
+function readURL(image,name,formID) {
+        let ulPrev = document.querySelector(formID+" #fr-images-prev");
         let reader = new FileReader();
 
         reader.onload = function (e) {
@@ -30,17 +31,17 @@ function readURL(image,name) {
     SHOW IMAGE PREVIEW
 * ========================================== */
 $(document).on('change','#upload', function () {
-    let input = document.getElementById( 'upload' );
-    mapImagesAndCreatePreview(input);
+    mapImagesAndCreatePreview('upload','#primaryPostForm');
 });
 
-function mapImagesAndCreatePreview(input) {
+function mapImagesAndCreatePreview(inputID,formID) {
+    let input = document.getElementById(inputID);
     let fileNames;
-    let infoArea = document.querySelector( '#primaryPostForm #upload-label' );
+    let infoArea = document.querySelector(formID+' #upload-label');
     if (input.files && input.files[0]) {
         for (var key in input.files) {
           if (input.files.hasOwnProperty(key)) {
-            readURL(input.files[key],input.files[key].name);
+            readURL(input.files[key],input.files[key].name,formID);
             fileNames = (key < 1) ? input.files[key].name+', ' : fileNames+' '+input.files[key].name+', ';
             imageFiles = [...imageFiles,input.files[key]];
           }
@@ -62,14 +63,9 @@ $(document).on('click','#primaryPostForm #fr-images-prev li button',function(){
     let name = $(this).data('name');
     let li = $(this).parents('li');
     li.remove();
-    let allLi = document.querySelectorAll('#primaryPostForm #fr-images-prev li');
     imageFiles.filter(function(value, index, arr){ 
         if(value.name == name) imageFiles.splice(index,1); 
     });
-    // allLi.forEach((li,i)=>{
-    //     li.firstChild.dataset.index = i;
-    // });
-    console.log(imageFiles);
 });
 
 /*  ==========================================
@@ -115,7 +111,7 @@ function removeAlert(button,status,data){
     var id = document.getElementById('fr-crud-response');
     var alertStatus = (status) ? "success" : "danger";
     id.innerHTML = '<div class="alert alert-'+alertStatus+'" role="alert">'+data+'</div>';
-    button.textContent = 'Post Report';
+    button.text('Post Report');
     setTimeout(function(){
         id.innerHTML = "";
     },2500);
@@ -144,7 +140,7 @@ $(document).on('click', '#submit_post',function (e) {
     postData.delete('files[]');
     this.textContent = 'Uploading...';
     submitData(postData,function(data,result){
-        removeAlert(this,result,data);
+        removeAlert($('#submit_post'),result,data);
         resetvalues('primaryPostForm');
     });
 })
@@ -173,6 +169,10 @@ $(document).on('click','span.fr-edit',function(){
     });
 });
 
+$(document).on('keyup','#editReportForm input[name=post_title],#editReportForm textarea[name=post_caption],#editReportForm input[name=post_tags]',function(){
+    $('#nothingChange').val(1);
+})
+
 function getReportToEdit(id,callback){
     let postData = new FormData();
 
@@ -187,26 +187,12 @@ function getReportToEdit(id,callback){
     });
 }
 
-$(document).on('click','#submitUpdate',function(e){
-    e.preventDefault();
-    let Form = document.getElementById('editReportForm');
-    let id = $('#editReportForm').data('post-id');
-    let postData = new FormData(Form);
-    imageFiles.map(val => {
-        postData.append('images[]',val);
-    })
-    postData.append('action','fr_request');
-    postData.append('action_type','update');
-    postData.delete('files[]');
-    postData.append('postID',id);
-    this.textContent = 'Updating...';
-    submitData(postData,function(data,result){
-        $('#submitUpdate').text('Updated');
-        setTimeout(function(){            
-            $('#submitUpdate').text('Update');
-        },2000)
-    });
-})
+/*  ==========================================
+    UPLOAD EDIT IMAGE PREVIEW
+* ========================================== */
+$(document).on('change','#upload-update', function () {
+    mapImagesAndCreatePreview('upload-update','#editReportForm');
+});
 
 /*  ==========================================
     SHOW EDIT FIELD REPORT PREVIEW IMAGES
@@ -220,11 +206,58 @@ function showEditPreviewImages(images){
         img += '<img data-img-id="'+val.id+'" src="'+val.thumbnail+'">';            
         li.innerHTML = img;
         ulPrev.append(li);
-    })    
+    })
 }
 
-$(document).on('click','#editReport button.close span',function(){
+/*  ==========================================
+    DELETE EDIT FIELD REPORT PREVIEW IMAGES
+* ========================================== */
+$(document).on('click','#editReportForm #fr-images-prev li button',function(){
+    let index = $(this).data('img-index');
+    let li = $(this).parents('li');
+    li.remove();
+    deletingImageIDs.push(index+1);
+});
+
+function resetEditForm(){
+    deletingImageIDs = Array();
+    imageFiles = Array();
+    $('#submitUpdate').text('Updated');
+}
+
+/*  ==========================================
+    SUBMIT EDIT FIELD REPORT UPDATE
+* ========================================== */
+$(document).on('click','#submitUpdate',function(e){
+    e.preventDefault();
+    let Form = document.getElementById('editReportForm');
+    let id = document.querySelector('#editReportForm').dataset.postId;
+    let postData = new FormData(Form);
+    imageFiles.map(val => {
+        postData.append('images[]',val);
+    })
+    postData.append('action','fr_request');
+    postData.append('action_type','update');
+    postData.append('delete_images',deletingImageIDs);
+    postData.delete('files[]');
+    postData.append('postID',id);
+    this.textContent = 'Updating...';
+    submitData(postData,function(data,result){
+        if(result){
+            resetEditForm();
+        }else{
+            alert('Something wen\'t wrong while updating, please try again.')
+        }
+        
+        setTimeout(function(){            
+            $('#submitUpdate').text('Update Report');
+        },2000)
+    });
+})
+
+$(document).on('click','#editReport .modal-header button.close',function(){
     resetvalues('editReportForm');
+    $('input#nothingChange').val(1);
 })
 
 /*  ==========================================
@@ -233,24 +266,26 @@ $(document).on('click','#editReport button.close span',function(){
 $(document).on('click','span.fr-delete',function(){
     let id = $(this).data('post-id');
     let title = $(this).data('post-title');
-    $('.modal#deleteReport #submitDelete').attr('data-post-id',id);
+    document.querySelector('#submitDelete').dataset.postId = id;
     $('#deleteReport .modal-body').html('<p class="h5">Are you sure you want to delete?</p> <p class="h6">"'+title+'"</p>');
 });
 
 $(document).on('click','#submitDelete',function(){
-    let id = $(this).data('post-id');
+    let id = document.querySelector('#submitDelete').dataset.postId;
     let postData = new FormData();
 
     postData.append('action','fr_request');
     postData.append('action_type','delete');
     postData.append('postID',id);
 
+    console.log(id);
+
     $(this).text('Deleting...');
 
     submitData(postData,function(data,result){
         if(result){
             $('#submitDelete').text('Deleted');
-            alert('Report is successfully deleted');
+            //alert('Report is successfully deleted');
             resetDeleteModal($('#submitDelete'),id);
         }else{
             alert('Something wen\'t wrong!');

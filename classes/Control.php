@@ -13,7 +13,7 @@ class Control {
   public function processRequest(){
     $this->_helper = new Helper;
     $this->_upload = new Upload($this->_helper);
-    $this->_update = new Update($this->_helper);
+    $this->_update = new Update($this->_helper,$this->_upload);
     $this->_delete = new Delete($this->_helper);
     
     if($this->_helper->checkUser() && isset($_POST['action_type'])){

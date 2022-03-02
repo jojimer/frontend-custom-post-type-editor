@@ -9,7 +9,7 @@ class Upload {
   }
 
 	// Create New Field Report Post
-	function addReport() {
+	private function addReport() {
 	    $results = '';
 	    $post_id = null;
 	 		
@@ -28,27 +28,9 @@ class Upload {
 		        'post_author'       => $author
 		    ) );
 
-		    // Upload Images	
-		    $files = $_FILES['images'];	    
-		    foreach( $files['name'] as $key => $val )
-		    {
-		    			$file = array(
-		    				"name" => $files["name"][$key],
-		    				"type" => $files["type"][$key],
-		    				"tmp_name" => $files["tmp_name"][$key],		    				
-		    				"size" => $files["size"][$key],
-		    				"error" => $files["error"][$key],
-		    			);
-		          if( is_array( $file ) ) {
-		                $attach_id = $this->upload_user_file($file);
-		                $row = array(
-										    'field_61649f14fe95e' => $attach_id,
-										    'field_616595a8df104'   => ''
-										);
-
-										add_row('field_61649f05fe95d', $row, $post_id);
-		          }
-		    }
+		    // Upload Images
+		    $this->addImagesToACFRow($_FILES['images'],$post_id);
+		    
 		  endif;
 	 
 	    if ( $post_id != 0 && $post_id != null)
@@ -63,8 +45,30 @@ class Upload {
 	    die($results);
 	}
 
+	public function addImagesToACFRow($files,$post_id){
+		foreach( $files['name'] as $key => $val )
+	    {
+  			$file = array(
+  				"name" => $files["name"][$key],
+  				"type" => $files["type"][$key],
+  				"tmp_name" => $files["tmp_name"][$key],		    				
+  				"size" => $files["size"][$key],
+  				"error" => $files["error"][$key],
+  			);
+        if( is_array( $file ) ) {
+              $attach_id = $this->upload_user_file($file);
+              $row = array(
+							    'field_61649f14fe95e' => $attach_id,
+							    'field_616595a8df104'   => ''
+							);
+
+							add_row('field_61649f05fe95d', $row, $post_id);
+        }
+	    }
+	}
+
 	//File Upload
-	function upload_user_file( $file = array() ) {
+	private function upload_user_file( $file = array() ) {
 			if ( ! function_exists( 'wp_handle_upload' ) ) {
 	        require_once($this->_urlPath . 'wp-admin/includes/file.php' );
 	    }
