@@ -112,6 +112,7 @@ function removeAlert(button,status,data){
     var alertStatus = (status) ? "success" : "danger";
     id.innerHTML = '<div class="alert alert-'+alertStatus+'" role="alert">'+data+'</div>';
     button.text('Post Report');
+    console.log(data);
     setTimeout(function(){
         id.innerHTML = "";
     },2500);
@@ -142,6 +143,7 @@ $(document).on('click', '#submit_post',function (e) {
     submitData(postData,function(data,result){
         removeAlert($('#submit_post'),result,data);
         resetvalues('primaryPostForm');
+        refreshContent();
     });
 })
 
@@ -245,6 +247,7 @@ $(document).on('click','#submitUpdate',function(e){
     submitData(postData,function(data,result){
         if(result){
             resetEditForm();
+            refreshContent();
         }else{
             alert('Something wen\'t wrong while updating, please try again.')
         }
@@ -309,3 +312,44 @@ function resetDeleteModal(button,id = false){
 
     button.text('Yes');
 }
+
+/*  ==========================================
+    FIELD REPORT PAGINATION
+* ========================================== */
+function refreshContent(paged = 1){
+    let profileID = document.querySelector('#fr-content').dataset.userProfile;
+    let postData = new FormData();
+
+    postData.append('action','fr_request');
+    postData.append('action_type','next_page');
+    postData.append('paged',paged);
+    postData.append('profile_id',profileID);
+
+    submitData(postData,function(data,result){
+        if(result){
+            let newData = JSON.parse(data.slice(0, -1));
+            //console.log(newData.list);
+            document.querySelector('#fr-list').innerHTML = newData.list;
+            document.querySelector('#fr-grid').innerHTML = newData.grid;
+            document.querySelector('#reportPagination').innerHTML = newData.pagination;
+        }else{
+            alert('Something wen\'t wrong!');
+        }
+    });
+}
+
+$(document).on('click','#reportPagination span:not(.current).page-numbers',function(e){
+    e.preventDefault();
+    let paged = this.getAttribute('href');
+    paged = paged.substr(paged.length - 1);
+    refreshContent(paged);    
+});
+
+function removePaginationAnchorTag(){
+    let pagination = document.querySelector('#reportPagination').innerHTML.replaceAll('<a','<span').replaceAll('a>','span>');
+    $('#reportPagination').html(pagination);
+}
+
+$(document).ready(function(){
+    removePaginationAnchorTag();
+})

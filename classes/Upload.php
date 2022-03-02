@@ -9,7 +9,7 @@ class Upload {
   }
 
 	// Create New Field Report Post
-	private function addReport() {
+	public function addReport() {
 	    $results = '';
 	    $post_id = null;
 	 		

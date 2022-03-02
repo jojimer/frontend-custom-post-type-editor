@@ -149,3 +149,12 @@ form#editReportForm .content-images-preview img {
 .fr-link a {
     text-decoration: none !important;    
 }
+
+#reportPagination span:not(.current).page-numbers {
+    color:  #518ff7;
+    cursor: pointer;
+}
+
+#reportPagination span:not(.current).page-numbers: hover{
+    color: #0b61f0;
+}

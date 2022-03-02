@@ -45,4 +45,120 @@ class Template {
     <?php include_once($this->_pluginPath.$modalContent); ?>
     </div></div></div>
 <?php }
+
+  // Report List Template
+  public function reportListTemplate($query){
+    $help = new Helper;
+    $html = '';
+    while ( $query->have_posts() ) : $query->the_post();
+    $postID = get_the_ID();
+    $title = get_the_title();
+    $url = get_the_permalink();
+    $images = get_field('images',$postID); 
+    $image = wp_get_attachment_image_src($images[0]['image'],'medium')[0];
+
+    $html .= '<div class="col-12 mb-4 report'.$postID.' report-item">
+        <div class="card">
+          <div class="card-body d-flex px-2">';
+            if($help->checkUser()) {
+            $html .= '<div class="fr-action-wrap">
+              <span class="fr-edit"
+                data-post-id="'.$postID.'"
+                data-post-title="'.$title.'"
+                title="Edit"
+                data-toggle="modal"
+                data-target="#editReport">
+                <i class="fas fa-pencil-alt"></i>
+              </span>
+              <span class="fr-delete"
+                data-post-id="'.$postID.'"
+                data-post-title="'.$title.'"
+                title="Delete" 
+                data-toggle="modal" 
+                data-target="#deleteReport">
+                  <i class="fas fa-times"></i>
+              </span>
+            </div>';
+            }
+            $html .= '<div class="fr-thumbnail col-3">
+              <div class="fr-d-grid">';
+              $images = get_field('images',$postID);
+              $imageCount = count($images);
+              $images = ($imageCount > 8 ) ? array_slice($images, 0, 8) : $images;
+              foreach($images as $image) : 
+              $img = wp_get_attachment_image_src($image['image'],'medium');
+              $html .= '<div class="img-thumb-wrap">
+              <img class="img-thumbnail" src="'.$img[0].'" alt="'.$title.'"></div>';
+              endforeach; 
+                if($imageCount > 7){
+                  $html .= '<div class="img-thumb-wrap fr-link"><a href="'.$url.'">'.$imageCount.'+</a></div>';
+                }           
+            $html .= '</div>';
+            $html .= '</div>';
+            $html .= '<div class="fr-content col-9">
+              <h5 class="card-title fr-link"><a href="'.$url.'">'.$title.'</a></h5>';
+            $html .= '<p class="card-text fr-link">'.wp_trim_words( get_the_excerpt(), $num_words = 120, '... <a class="mt-3 float-right" href="'.$url.'"> Read More ></a>' ).'</p>
+            </div>
+          </div>
+        </div>
+      </div>';
+    endwhile;
+    return $html;
+  }
+
+  // Report Grid Template
+  public function reportGridTemplate($query){
+    $help = new Helper;
+    $html = '';
+    while ( $query->have_posts() ) : $query->the_post(); 
+      $postID = get_the_ID();
+      $title = get_the_title();
+      $url = get_the_permalink();
+      
+      $html .= '<div class="col-4 mb-4 report'. $postID.' report-item">
+        <div class="card">
+          <div class="card-body p-4 position-relative">';
+           if($help->checkUser()) {
+            $html .= '<div class="fr-action-wrap">
+              <span class="fr-edit"
+                data-post-id="'.$postID.'"
+                data-post-title="'.$title.'"
+                title="Edit"
+                data-toggle="modal"
+                data-target="#editReport">
+                <i class="fas fa-pencil-alt"></i>
+              </span>
+              <span class="fr-delete"
+                data-post-id="'.$postID.'"
+                data-post-title="'.$title.'"
+                title="Delete" 
+                data-toggle="modal" 
+                data-target="#deleteReport">
+                  <i class="fas fa-times"></i>
+              </span>
+            </div>';
+            }
+            $html .= '<div class="fr-d-grid">';
+              $images = get_field('images',$postID);
+              $imageCount = count($images);
+              $images = ($imageCount > 8 ) ? array_slice($images, 0, 8) : $images;
+              foreach($images as $image) : 
+              $img = wp_get_attachment_image_src($image['image'],'medium');
+              $html .= '<div class="img-thumb-wrap">
+              <img class="img-thumbnail" src="'.$img[0].'" alt="'.$title.'"></div>';
+              endforeach;
+              if($imageCount > 7){
+                $html .= '<div class="img-thumb-wrap fr-link"><a href="'.$url.'">'.$imageCount.'+</a></div>';
+              }            
+            $html .= '</div>';              
+            $html .= '<h5 class="card-title fr-link"><a href="'.$url.'">'.$title.'</a></h5>';
+            $html .= '<p class="card-text fr-link">'.wp_trim_words( get_the_excerpt(), $num_words = 25, '... <br><a class="mt-3 float-right" href="'.$url.'"> Read More ></a>' ).'</p>
+          </div>
+        </div>
+      </div>';
+    endwhile;
+
+    return $html;
+  }
+
 }

@@ -17,10 +17,12 @@ class Control {
     $this->_delete = new Delete($this->_helper);
     
     if($this->_helper->checkUser() && isset($_POST['action_type'])){
-      if($_POST['action_type'] === 'get') 
-        $this->_helper->fetchReport($_POST['postID']);
       if($_POST['action_type'] === 'post') 
         $this->_upload->addReport();
+      if($_POST['action_type'] === 'get') 
+        $this->_helper->fetchSingleReport($_POST['postID']);
+      if($_POST['action_type'] === 'next_page')
+        $this->_helper->fetchPaginatedReport($_POST['paged'],$_POST['profile_id']);      
       if($_POST['action_type'] === 'update') 
         $this->_update->updateReport($_POST['postID']);
       if($_POST['action_type'] === 'delete') 

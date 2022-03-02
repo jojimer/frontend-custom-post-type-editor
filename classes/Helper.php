@@ -1,4 +1,5 @@
 <?php
+include_once FFRCRUD_PATH.'classes/Template.php';
 
 class Helper {  
   public $currentUser;
@@ -16,8 +17,8 @@ class Helper {
     return false;
   }
 
-  // Fetch Report
-  public function fetchReport($id) {
+  // Fetch Single Report
+  public function fetchSingleReport($id) {
     if($this->checkUser()){
       // Create WP Query to fetch single fiel report for edit
       $post = get_post($id);
@@ -41,5 +42,47 @@ class Helper {
       );
       echo json_encode($data);
     }
+  }
+
+  // Fetch Paginated Report
+  public function fetchPaginatedReport($paged = 1, $profileUser = 0){
+    $profileUser = ($profileUser === 0) ? $this->profileUser->data->ID : $profileUser;
+    $query = $this->prepareReport($paged,$profileUser);
+    $template = new Template;
+    $pagination = $this->report_pagination($query,$paged);
+    $pagination = str_replace('<a','<span',$pagination);
+    $pagination = str_replace('a>','span>',$pagination);
+    $result = array(
+      "list" => $template->reportListTemplate($query),
+      "grid" => $template->reportGridTemplate($query),
+      "pagination" => $pagination
+    );
+
+    echo json_encode($result);
+  }
+
+  // Prepare Report Argument and Paginated Post
+  public function prepareReport
+  ($paged = 1, $profileUser = 0){
+    $profileUser = ($profileUser === 0) ? $this->profileUser->data->ID : $profileUser;
+    $args = [
+      'paged' => $paged,
+      'author' => $profileUser,
+      'post_type' => 'field-report',
+      'order' => 'DESC',
+      'posts_per_page' => 8
+    ];
+
+    return new WP_Query($args);
+  }
+
+  // Create Pagination with number
+  public function report_pagination($query,$current_page = 1) {
+    $big = 9999999; // need an unlikely integer
+    return paginate_links( array(
+     'base' => str_replace( $big, '%#%', esc_url( get_pagenum_link( $big ) ) ),
+     'format' => '?paged=%#%',
+     'current' => max( 1, $current_page),
+     'total' => $query->max_num_pages) );
   }
 }
