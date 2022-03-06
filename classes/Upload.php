@@ -59,7 +59,8 @@ class Upload {
               $attach_id = $this->upload_user_file($file);
               $row = array(
 							    'field_61649f14fe95e' => $attach_id,
-							    'field_616595a8df104'   => ''
+							    'field_616595a8df104'   => '',
+							    'field_61658da80194a' => 0
 							);
 
 							add_row('field_61649f05fe95d', $row, $post_id);
